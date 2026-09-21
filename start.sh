@@ -95,8 +95,25 @@ echo -e "\n${YELLOW}[4/5] Running Drizzle database migrations...${NC}"
 echo ""
 echo -e "${GREEN}  ✓ Migrations applied successfully!${NC}"
 
-# 5. Run Server and Client Concurrently
+# 5. Check Ports and Launch Client and Server
 echo -e "\n${YELLOW}[5/5] Launching Client and Server...${NC}"
+
+FRONTEND_TARGET_PORT="${FRONTEND_PORT:-5173}"
+BACKEND_TARGET_PORT="${PORT:-3000}"
+
+if lsof -Pi :"$FRONTEND_TARGET_PORT" -sTCP:LISTEN -t >/dev/null 2>&1 ; then
+  CONFLICT_PID=$(lsof -Pi :"$FRONTEND_TARGET_PORT" -sTCP:LISTEN -t | head -n 1)
+  echo -e "${RED}Error: Port $FRONTEND_TARGET_PORT is already in use (PID: $CONFLICT_PID).${NC}"
+  echo -e "${YELLOW}Please stop the existing process before starting (e.g. kill -9 $CONFLICT_PID).${NC}"
+  exit 1
+fi
+
+if lsof -Pi :"$BACKEND_TARGET_PORT" -sTCP:LISTEN -t >/dev/null 2>&1 ; then
+  CONFLICT_PID=$(lsof -Pi :"$BACKEND_TARGET_PORT" -sTCP:LISTEN -t | head -n 1)
+  echo -e "${RED}Error: Port $BACKEND_TARGET_PORT is already in use (PID: $CONFLICT_PID).${NC}"
+  echo -e "${YELLOW}Please stop the existing process before starting (e.g. kill -9 $CONFLICT_PID).${NC}"
+  exit 1
+fi
 
 BACKEND_PID=""
 FRONTEND_PID=""
