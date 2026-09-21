@@ -1,0 +1,16 @@
+{
+  "name": "acme-task-portal",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "./start.sh",
+    "dev": "./start.sh",
+    "docker:up": "docker compose up --build",
+    "docker:down": "docker compose down",
+    "docker:db": "docker compose up -d db",
+    "db:migrate": "npm --prefix backend run db:migrate",
+    "backend": "npm --prefix backend run dev",
+    "frontend": "npm --prefix frontend run dev"
+  }
+}
