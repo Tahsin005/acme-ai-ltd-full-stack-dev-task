@@ -41,9 +41,40 @@ POSTGRES_PORT=5432
 PORT=3000
 FRONTEND_PORT=5173
 VITE_API_URL=http://localhost:3000/api
+
+# Stripe Configuration
+STRIPE_SECRET_KEY=
+STRIPE_WEBHOOK_SECRET=
 ```
 
-### 3. Run the app
+### 3. Stripe Setup (for Pro Upgrade & Payments)
+
+To test the **Upgrade to Pro** checkout flow, add your Stripe test keys to `backend/.env`:
+
+#### A. Stripe Secret Key (`STRIPE_SECRET_KEY`)
+1. Log in to the [Stripe Dashboard](https://dashboard.stripe.com/) and ensure **Test mode** is toggled ON.
+2. Go to **Developers** > **[API keys](https://dashboard.stripe.com/test/apikeys)**.
+3. Copy the **Secret key** (`sk_test_...`) and paste it into `backend/.env`:
+   ```env
+   STRIPE_SECRET_KEY=sk_test_...
+   ```
+
+#### B. Stripe Webhook Secret (`STRIPE_WEBHOOK_SECRET`)
+For local development, forward webhook events using the [Stripe CLI](https://docs.stripe.com/stripe-cli):
+1. Authenticate with Stripe:
+   ```bash
+   stripe login
+   ```
+2. Start forwarding events to your local backend:
+   ```bash
+   stripe listen --forward-to localhost:3000/api/webhook
+   ```
+3. Copy the signing secret printed in the terminal (`whsec_...`) and paste it into `backend/.env`:
+   ```env
+   STRIPE_WEBHOOK_SECRET=whsec_...
+   ```
+
+### 4. Run the app
 
 #### Option A — One-command local dev (recommended)
 
@@ -67,7 +98,7 @@ docker compose up --build
 
 This starts all three services (database, backend, frontend) in containers.
 
-### 4. Access the app
+### 5. Access the app
 
 | Service  | URL                          |
 | -------- | ---------------------------- |
