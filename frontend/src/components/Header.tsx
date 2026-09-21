@@ -1,5 +1,6 @@
-import { Plus, CheckSquare } from "lucide-react";
+import { Plus, CheckSquare, Download } from "lucide-react";
 import { useTaskStore } from "../store/useTaskStore.js";
+import { usePWAInstall } from "../hooks/usePWAInstall.js";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 
@@ -9,6 +10,7 @@ interface HeaderProps {
 
 export function Header({ totalTasks }: HeaderProps) {
   const openCreateModal = useTaskStore((s) => s.openCreateModal);
+  const { canInstall, install } = usePWAInstall();
 
   return (
     <header className="border-b border-border bg-card sticky top-0 z-30 shadow-xs">
@@ -28,16 +30,33 @@ export function Header({ totalTasks }: HeaderProps) {
           </div>
         </div>
 
-        <Button
-          type="button"
-          onClick={openCreateModal}
-          size="default"
-          className="cursor-pointer gap-2 font-semibold h-10 px-4"
-        >
-          <Plus className="w-4 h-4" />
-          <span>New Task</span>
-        </Button>
+        <div className="flex items-center gap-2">
+          {canInstall && (
+            <Button
+              type="button"
+              onClick={install}
+              variant="outline"
+              size="default"
+              className="cursor-pointer gap-2 font-semibold h-10 px-4"
+              id="pwa-install-btn"
+            >
+              <Download className="w-4 h-4" />
+              <span className="hidden sm:inline">Install App</span>
+            </Button>
+          )}
+
+          <Button
+            type="button"
+            onClick={openCreateModal}
+            size="default"
+            className="cursor-pointer gap-2 font-semibold h-10 px-4"
+          >
+            <Plus className="w-4 h-4" />
+            <span>New Task</span>
+          </Button>
+        </div>
       </div>
     </header>
   );
 }
+
